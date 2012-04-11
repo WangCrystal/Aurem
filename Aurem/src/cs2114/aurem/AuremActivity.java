@@ -44,7 +44,12 @@ public class AuremActivity extends Activity {
             output += i + "  " + eq.getPresetName(i) + "\n";
         }
         short[] range = eq.getBandLevelRange();
-        output += "\n" + range[0] + " to " + range[1];
+        output += "\n" +"Level Range:  " + range[0] + " to " + range[1] + "\n";
+
+        output += "\nThe Center Frequencies of each band\n";
+        for(short i = 0; i < 5; i++) {
+            output += i + "  " + eq.getCenterFreq(i) + "\n";
+        }
         debug.setText(output);
     }
 }
