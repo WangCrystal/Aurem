@@ -1,5 +1,11 @@
 package cs2114.aurem;
 
+import android.view.View;
+import android.os.IBinder;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
+import android.content.Intent;
 import android.widget.TextView;
 import android.media.audiofx.Equalizer;
 import android.app.Activity;
@@ -18,6 +24,9 @@ public class AuremActivity extends Activity {
     private Equalizer eq;
 
     private TextView debug;
+
+    private Intent intent;
+    private EqualizerService eqService;
 
     /** Called when the activity is first created. */
     @Override
@@ -50,6 +59,32 @@ public class AuremActivity extends Activity {
         for(short i = 0; i < 5; i++) {
             output += i + "  " + eq.getCenterFreq(i) + "\n";
         }
+
+        intent = new Intent(this, EqualizerService.class);
+        startService(intent);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
         debug.setText(output);
+
     }
+
+    /**
+     * This is called when the test button is clicked.
+     * @param view The view.
+     */
+    public void testButtonClicked(View view) {
+        debug.setText(eqService.testPrintout());
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className,
+            IBinder service) {
+            eqService =
+                ((EqualizerService.ServiceBinder) service).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            eqService = null;
+        }
+    };
 }
