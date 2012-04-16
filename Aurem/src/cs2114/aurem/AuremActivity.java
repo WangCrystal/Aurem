@@ -1,5 +1,8 @@
 package cs2114.aurem;
 
+import android.app.PendingIntent;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.view.View;
 import android.os.IBinder;
 import android.content.ComponentName;
@@ -21,51 +24,43 @@ import android.os.Bundle;
  */
 public class AuremActivity extends Activity {
 
-    private Equalizer eq;
 
     private TextView debug;
 
     private Intent intent;
     private EqualizerService eqService;
 
+    private NotificationManager notificationManager;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        eq = new Equalizer(1, 0);
-        eq.usePreset((short) 9);
 
         debug = (TextView) findViewById(R.id.debug);
-        String output = eq.getProperties().toString() + "\n";
-        for(short i = 0; i < 5; i ++) {
-            output += eq.getBandLevel(i) + " ";
-        }
-        output += "\n";
-        short band = 1;
-        short level = 300;
-        eq.setBandLevel(band, level);
-        for(short i = 0; i < 5; i ++) {
-            output += eq.getBandLevel(i) + " ";
-        }
-        output += "\n\n";
-        for(short i = 0; i < 10; i ++) {
-            output += i + "  " + eq.getPresetName(i) + "\n";
-        }
-        short[] range = eq.getBandLevelRange();
-        output += "\n" +"Level Range:  " + range[0] + " to " + range[1] + "\n";
-
-        output += "\nThe Center Frequencies of each band\n";
-        for(short i = 0; i < 5; i++) {
-            output += i + "  " + eq.getCenterFreq(i) + "\n";
-        }
 
         intent = new Intent(this, EqualizerService.class);
         startService(intent);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        debug.setText(output);
+        //All this stuff has to do with setting up a persisent
+        //notification icon to let the user return to the app.
 
+        PendingIntent contentIntent =
+            PendingIntent.getActivity(this, 1, new Intent(this,
+                AuremActivity.class), 0);
+        notificationManager = (NotificationManager)
+            getSystemService(Context.NOTIFICATION_SERVICE);
+        int icon = R.drawable.ic_launcher;
+        Notification notification = new Notification(icon,
+            "Aurem", System.currentTimeMillis());
+        Context context = getApplicationContext();
+        CharSequence contentTitle = "Aurem EQ";
+        CharSequence contentText = "Tap to return to Aurem EQ";
+        notification.setLatestEventInfo(context, contentTitle,
+            contentText, contentIntent);
+        notificationManager.notify(1, notification);
     }
 
     /**
@@ -74,6 +69,16 @@ public class AuremActivity extends Activity {
      */
     public void testButtonClicked(View view) {
         debug.setText(eqService.testPrintout());
+    }
+
+    /**
+     * Called when the Activity is exited.
+     */
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        unbindService(serviceConnection);
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
