@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.ServiceConnection;
 import android.content.Intent;
 import android.widget.TextView;
-import android.media.audiofx.Equalizer;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -31,6 +30,8 @@ public class AuremActivity extends Activity {
     private EqualizerService eqService;
 
     private NotificationManager notificationManager;
+
+    private EqualizerModel model;
 
     /** Called when the activity is first created. */
     @Override
@@ -54,13 +55,16 @@ public class AuremActivity extends Activity {
             getSystemService(Context.NOTIFICATION_SERVICE);
         int icon = R.drawable.ic_launcher;
         Notification notification = new Notification(icon,
-            "Aurem", System.currentTimeMillis());
+            "Aurem EQ", System.currentTimeMillis());
         Context context = getApplicationContext();
         CharSequence contentTitle = "Aurem EQ";
         CharSequence contentText = "Tap to return to Aurem EQ";
         notification.setLatestEventInfo(context, contentTitle,
             contentText, contentIntent);
         notificationManager.notify(1, notification);
+
+        model = new EqualizerModel();
+        model.readPresetFile();
     }
 
     /**
@@ -68,6 +72,7 @@ public class AuremActivity extends Activity {
      * @param view The view.
      */
     public void testButtonClicked(View view) {
+
         debug.setText(eqService.testPrintout());
     }
 
