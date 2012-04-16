@@ -72,8 +72,25 @@ public class AuremActivity extends Activity {
      * @param view The view.
      */
     public void testButtonClicked(View view) {
+        String[] names = new String[10 + model.getPresetMap().size()];
+        for(short i = 0; i < 10; i++) {
+            names[i] = eqService.equalizer().getPresetName(i);
+        }
+        for (short i = 10; i < names.length; i++) {
+            names[i] = model.getPresetMap().get(i).getName();
+        }
+        Intent listIntent = new Intent(this, PresetListView.class);
+        listIntent.putExtra("names", names);
+        this.startActivityForResult(listIntent, 666);
+    }
 
-        debug.setText(eqService.testPrintout());
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+        Intent result)
+    {
+        if(requestCode == 666 && resultCode == RESULT_OK) {
+            debug.setText(result.getIntExtra("index", 0));
+        }
     }
 
     /**

@@ -3,7 +3,6 @@ package cs2114.aurem;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.FileReader;
-import java.io.BufferedReader;
 import java.util.Scanner;
 import java.util.Observable;
 import java.util.HashMap;
@@ -39,7 +38,7 @@ public class EqualizerModel extends Observable
     {
         String output = "";
         try {
-            outStream = new PrintWriter("res/raw/presets.txt");
+            outStream = new PrintWriter("presets.txt");
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
@@ -66,8 +65,7 @@ public class EqualizerModel extends Observable
     public void readPresetFile()
     {
         try {
-            inStream = new Scanner(new BufferedReader(
-                 new FileReader("res/raw/presets.txt")));
+            inStream = new Scanner(new FileReader("presets.txt"));
         }
         catch (IOException e)
         {
@@ -87,8 +85,6 @@ public class EqualizerModel extends Observable
             presets.put(index, preset);
         }
         inStream.close();
-
-
     }
 
     /**

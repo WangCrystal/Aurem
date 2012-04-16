@@ -104,6 +104,15 @@ public class EqualizerService extends Service
     }
 
     /**
+     * Returns an instance of the equalizer.
+     * @return Equalizer the equalizer.
+     */
+    public Equalizer equalizer()
+    {
+        return eq;
+    }
+
+    /**
      * T// ----------------------------------------------------------------
     /**
      *  This inner binder class allows the activity to interact with the
