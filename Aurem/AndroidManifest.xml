@@ -12,18 +12,10 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
-        <activity
-            android:name="abcActivty"
-            android:name=".AuremActivity"
-<<<<<<< HEAD
-            android:label="@string/app_name" android:launchMode="singleTask"
-            android:screenOrientation="landscape" >
-=======
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
+        <activity android:name=".AuremActivity" 
+            android:label="@string/app_name" 
             android:launchMode="singleTask"
-            android:screenOrientation="landscape" />
->>>>>>> branch 'master' of git@github.com:josephtaylor/Aurem.git
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
