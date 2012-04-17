@@ -1,5 +1,6 @@
 package cs2114.aurem;
 
+import java.io.File;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.app.AlertDialog;
@@ -70,7 +71,12 @@ public class AuremActivity extends Activity {
         notificationManager.notify(1, notification);
 
         model = new EqualizerModel(this);
-        model.writePresetFile();
+
+        //Write the preset file if it doesn't exist already....
+        File file = new File("/sdcard/Aurem/presets.txt");
+        if(!file.exists()) {
+            model.writePresetFile();
+        }
         model.readPresetFile();
     }
 
