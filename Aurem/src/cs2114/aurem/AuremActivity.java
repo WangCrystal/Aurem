@@ -70,6 +70,7 @@ public class AuremActivity extends Activity {
         notificationManager.notify(1, notification);
 
         model = new EqualizerModel(this);
+        model.writePresetFile();
         model.readPresetFile();
     }
 
