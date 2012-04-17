@@ -4,5 +4,7 @@
     <string name="hello">Hello World, AuremActivity!</string>
     <string name="app_name">Aurem</string>
     <string name="loadPreset">Load Preset</string>
+    <string name="empty">" "</string>
+    <string name="savePreset">Save Preset</string>
 
 </resources>

@@ -1,5 +1,9 @@
 package cs2114.aurem;
 
+import android.content.DialogInterface;
+import android.widget.EditText;
+import android.app.AlertDialog;
+import android.media.AudioManager;
 import android.app.PendingIntent;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,7 +26,6 @@ import android.os.Bundle;
  *  @version 2012.04.10
  */
 public class AuremActivity extends Activity {
-
 
     private TextView debug;
 
@@ -89,6 +92,41 @@ public class AuremActivity extends Activity {
         //listIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         listIntent.putExtra("names", names);
         this.startActivityForResult(listIntent, 666);
+    }
+
+    /**
+     * Called when the savePreset button is clicked.
+     */
+    public void savePresetClicked(View view)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("New Preset");
+        alert.setMessage("Please Enter a Name.");
+
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+          String entered = input.getText().toString();
+          short[] bands = new short[5];
+          for(short i = 0; i < bands.length; i ++) {
+              bands[i] = eqService.equalizer().getBandLevel(i);
+          }
+          model.createPreset(entered, bands);
+          model.writePresetFile();
+          }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int whichButton) {
+            // Canceled.
+          }
+        });
+
+        alert.show();
+
     }
 
     @Override

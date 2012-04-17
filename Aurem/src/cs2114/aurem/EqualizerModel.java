@@ -1,5 +1,8 @@
 package cs2114.aurem;
 
+import java.io.File;
+import android.os.Environment;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import android.app.Activity;
 import java.io.FileInputStream;
@@ -26,13 +29,13 @@ public class EqualizerModel extends Observable
 
     private PrintWriter outStream;
 
-    private Activity parent;
+    private AuremActivity parent;
 
     private short[] bandLevels;
     /**
      * This is the constructor for EqualizerModel objects.
      */
-    public EqualizerModel(Activity parent)
+    public EqualizerModel(AuremActivity parent)
     {
         presets = new ArrayList<Preset>();
         this.parent = parent;
@@ -43,9 +46,14 @@ public class EqualizerModel extends Observable
      */
     public void writePresetFile()
     {
+        File directory = new File("/sdcard/Aurem/");
+        directory.mkdirs();
+        File outputFile = new File(directory, "presets.txt");
+        FileOutputStream outputStream;
         String output = "";
         try {
-            outStream = new PrintWriter("presets.txt");
+            outputStream = new FileOutputStream(outputFile);
+            outStream = new PrintWriter(outputStream);
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
@@ -59,7 +67,7 @@ public class EqualizerModel extends Observable
             for(int j = 0; j < 5; j++) {
                 output += bands[j] + ",";
             }
-            output += bands[6] + "\n";
+            output += preset.getName() + "\n";
         }
         outStream.print(output);
         outStream.close();
@@ -71,9 +79,14 @@ public class EqualizerModel extends Observable
      */
     public void readPresetFile()
     {
-        InputStream inputStream;
-        inputStream = parent.getResources().openRawResource(R.raw.presets);
-        inStream = new Scanner(inputStream);
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream("/sdcard/Aurem/presets.txt");
+            inStream = new Scanner(inputStream);
+        }
+        catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
         inStream.useDelimiter("\n");
         while(inStream.hasNext() ) {
             String line = inStream.next();
@@ -110,6 +123,20 @@ public class EqualizerModel extends Observable
         bandLevels[index] = bandLevel;
         setChanged();
         notifyObservers();
+    }
+
+    /**
+     * This creates a new preset and adds it to the list of
+     * presets.
+     */
+    public void createPreset(String name, short[] bands)
+    {
+        int index = presets.size();
+        Preset preset = new Preset((short)(index), name);
+        preset.setBands(bands);
+        presets.add(preset);
+
+
     }
 
     /**

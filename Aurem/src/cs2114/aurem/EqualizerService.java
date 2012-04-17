@@ -29,8 +29,9 @@ public class EqualizerService extends Service
     {
         super.onCreate();
 
-        eq = new Equalizer(1, 0);
+        eq = new Equalizer(1000000, 0);
         eq.usePreset((short) 0);
+        eq.setEnabled(true);
     }
     /**
      * This gets called after onCreate() and only gets called
