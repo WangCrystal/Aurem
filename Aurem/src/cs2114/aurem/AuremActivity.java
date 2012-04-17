@@ -4,7 +4,6 @@ import java.io.File;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.app.AlertDialog;
-import android.media.AudioManager;
 import android.app.PendingIntent;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -39,6 +38,8 @@ public class AuremActivity extends Activity {
 
     private Intent listIntent;
 
+    private EqualizerView view;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,9 @@ public class AuremActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        debug = (TextView) findViewById(R.id.debug);
+
+
+        //debug = (TextView) findViewById(R.id.debug);
 
         intent = new Intent(this, EqualizerService.class);
         startService(intent);
@@ -68,6 +71,7 @@ public class AuremActivity extends Activity {
         CharSequence contentText = "Tap to return to Aurem EQ";
         notification.setLatestEventInfo(context, contentTitle,
             contentText, contentIntent);
+        notification.flags |= Notification.FLAG_NO_CLEAR;
         notificationManager.notify(1, notification);
 
         model = new EqualizerModel(this);
@@ -78,6 +82,9 @@ public class AuremActivity extends Activity {
             model.writePresetFile();
         }
         model.readPresetFile();
+
+        view = (EqualizerView) findViewById(R.id.equalizerView1);
+        view.setModel(model);
     }
 
     /**
@@ -109,7 +116,7 @@ public class AuremActivity extends Activity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("New Preset");
-        alert.setMessage("Please Enter a Name.");
+        alert.setMessage("Please enter a name for your preset.");
 
         final EditText input = new EditText(this);
         alert.setView(input);
@@ -183,6 +190,9 @@ public class AuremActivity extends Activity {
             IBinder service) {
             eqService =
                 ((EqualizerService.ServiceBinder) service).getService();
+            for(short i = 0; i < 5; i ++) {
+                model.setBandLevel(i, eqService.equalizer().getBandLevel(i));
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {

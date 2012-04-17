@@ -39,6 +39,7 @@ public class EqualizerModel extends Observable
     {
         presets = new ArrayList<Preset>();
         this.parent = parent;
+        bandLevels = new short[5];
     }
 
     /**
@@ -123,6 +124,19 @@ public class EqualizerModel extends Observable
         bandLevels[index] = bandLevel;
         setChanged();
         notifyObservers();
+    }
+
+    /**
+     * Returns the level for a given band
+     * @param index the index of the band
+     * @return short the band level.
+     */
+    public short getBandLevel(short index)
+    {
+        if(index < 0 || index >= bandLevels.length) {
+            return 0;
+        }
+        return bandLevels[index];
     }
 
     /**
