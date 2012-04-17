@@ -28,7 +28,9 @@ public class EqualizerService extends Service
     public void onCreate()
     {
         super.onCreate();
-        //. THIS GETS CALLED FIRST.
+
+        eq = new Equalizer(1, 0);
+        eq.usePreset((short) 0);
     }
     /**
      * This gets called after onCreate() and only gets called
@@ -73,8 +75,7 @@ public class EqualizerService extends Service
      */
     public String testPrintout()
     {
-        eq = new Equalizer(1, 0);
-        eq.usePreset((short) 0);
+
 
 
         String output = eq.getProperties().toString() + "\n";

@@ -2,8 +2,6 @@ package cs2114.aurem;
 
 import android.content.Intent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.os.Bundle;
@@ -33,41 +31,16 @@ public class PresetListView extends ListActivity
         names = getIntent().getStringArrayExtra("names");
         setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item
             , names));
-
-        ListView listView = getListView();
-        listView.setOnItemClickListener(new ListClickListener());
     }
 
-    /**
-     * // -------------------------------------------------------------------------
-    /**
-     *  A listener for the list.
-     *
-     *  @author J. Taylor O'Connor (jto2e)
-     *  @version 2012.04.16
-     */
-    public class ListClickListener implements OnItemClickListener
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id)
     {
-        /**
-         * Method that is called when a list item is clicked.
-         * @param parent AdapterView<?> the parent.
-         * @param view View the view.
-         * @param location int the index of the item.
-         * @param id long the id of the item selected.
-         */
-        public void onItemClick(
-            AdapterView<?> parent,
-            View view,
-            int location,
-            long id)
-        {
-            Intent intent = new Intent();
-            intent.putExtra("index", location);
-            setResult(RESULT_OK, intent);
-
-        }
-
+        super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent();
+        intent.putExtra("index", position);
+        setResult(RESULT_OK, intent);
+        finish();
     }
-
-
 }
+

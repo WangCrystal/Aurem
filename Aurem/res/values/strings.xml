@@ -3,6 +3,6 @@
 
     <string name="hello">Hello World, AuremActivity!</string>
     <string name="app_name">Aurem</string>
-    <string name="testService">Test Service</string>
+    <string name="loadPreset">Load Preset</string>
 
 </resources>

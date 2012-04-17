@@ -33,9 +33,12 @@ public class AuremActivity extends Activity {
 
     private EqualizerModel model;
 
+    private Intent listIntent;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -63,7 +66,7 @@ public class AuremActivity extends Activity {
             contentText, contentIntent);
         notificationManager.notify(1, notification);
 
-        model = new EqualizerModel();
+        model = new EqualizerModel(this);
         model.readPresetFile();
     }
 
@@ -72,14 +75,18 @@ public class AuremActivity extends Activity {
      * @param view The view.
      */
     public void testButtonClicked(View view) {
-        String[] names = new String[10 + model.getPresetMap().size()];
-        for(short i = 0; i < 10; i++) {
-            names[i] = eqService.equalizer().getPresetName(i);
+        String[] names = new String[10 + model.getPresets().size()];
+        for(int i = 0; i < 10; i++) {
+            names[i] = eqService.equalizer().getPresetName((short) i);
         }
-        for (short i = 10; i < names.length; i++) {
-            names[i] = model.getPresetMap().get(i).getName();
+        for (short i = 0; i < model.getPresets().size(); i++) {
+            names[i + 10] = model.getPresets().get(i).getName();
         }
-        Intent listIntent = new Intent(this, PresetListView.class);
+
+        this.onSaveInstanceState(new Bundle());
+
+        listIntent = new Intent(this, PresetListView.class);
+        //listIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         listIntent.putExtra("names", names);
         this.startActivityForResult(listIntent, 666);
     }
@@ -89,8 +96,31 @@ public class AuremActivity extends Activity {
         Intent result)
     {
         if(requestCode == 666 && resultCode == RESULT_OK) {
-            debug.setText(result.getIntExtra("index", 0));
+            short resultingPreset = (short) result.getIntExtra("index", 0);
+            if(resultingPreset <= 9) {
+                eqService.equalizer().usePreset( (short)
+                    result.getIntExtra("index", 0));
+                String state = eqService.equalizer().
+                    getProperties().toString();
+                debug.setText(state);
+            }
+            else {
+                Preset preset = model.getPreset((short)(resultingPreset - 10));
+                short[] bands = preset.getBands();
+                for(short i = 0; i < bands.length; i++) {
+                    eqService.equalizer().setBandLevel(i, bands[i]);
+                }
+                String state = eqService.equalizer().
+                    getProperties().toString();
+                debug.setText(state);
+            }
         }
+    }
+
+    @Override
+    public void onNewIntent(Intent newIntent)
+    {
+        //.
     }
 
     /**

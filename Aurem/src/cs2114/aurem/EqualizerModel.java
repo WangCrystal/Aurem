@@ -1,11 +1,15 @@
 package cs2114.aurem;
 
+import java.io.InputStream;
+import android.app.Activity;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import android.util.Log;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.FileReader;
 import java.util.Scanner;
 import java.util.Observable;
-import java.util.HashMap;
 
 /**
  * // -------------------------------------------------------------------------
@@ -16,19 +20,22 @@ import java.util.HashMap;
  */
 public class EqualizerModel extends Observable
 {
-    private HashMap<Short, Preset> presets;
+    private ArrayList<Preset> presets;
 
     private Scanner inStream;
 
     private PrintWriter outStream;
 
+    private Activity parent;
+
     private short[] bandLevels;
     /**
      * This is the constructor for EqualizerModel objects.
      */
-    public EqualizerModel()
+    public EqualizerModel(Activity parent)
     {
-        presets = new HashMap<Short, Preset>();
+        presets = new ArrayList<Preset>();
+        this.parent = parent;
     }
 
     /**
@@ -64,13 +71,9 @@ public class EqualizerModel extends Observable
      */
     public void readPresetFile()
     {
-        try {
-            inStream = new Scanner(new FileReader("presets.txt"));
-        }
-        catch (IOException e)
-        {
-            System.out.println(e.getMessage());
-        }
+        InputStream inputStream;
+        inputStream = parent.getResources().openRawResource(R.raw.presets);
+        inStream = new Scanner(inputStream);
         inStream.useDelimiter("\n");
         while(inStream.hasNext() ) {
             String line = inStream.next();
@@ -82,7 +85,7 @@ public class EqualizerModel extends Observable
                 bands[i - 1] = Short.parseShort(data[i]);
             }
             preset.setBands(bands);
-            presets.put(index, preset);
+            presets.add(index, preset);
         }
         inStream.close();
     }
@@ -113,7 +116,7 @@ public class EqualizerModel extends Observable
      * Returns the HashMap of presets.
      * @return presets the hashMap of presets.
      */
-    public HashMap<Short, Preset> getPresetMap()
+    public ArrayList<Preset> getPresets()
     {
         return presets;
     }
