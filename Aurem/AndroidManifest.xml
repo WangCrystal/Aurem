@@ -14,7 +14,9 @@
         android:label="@string/app_name" >
         <activity android:name=".AuremActivity" 
             android:label="@string/app_name" 
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask" 
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

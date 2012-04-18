@@ -1,6 +1,5 @@
 package cs2114.aurem;
 
-import android.widget.ImageButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SeekBar;
 import java.io.File;
@@ -16,7 +15,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
 import android.content.Intent;
-import android.widget.TextView;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -40,7 +38,7 @@ public class AuremActivity extends Activity {
 
     private Intent listIntent;
 
-    private EqualizerView view;
+    private EqualizerView eqView;
 
     private boolean isServiceOn;
 
@@ -106,8 +104,9 @@ public class AuremActivity extends Activity {
             new SeekBarListener());
         }
 
-        view = (EqualizerView) findViewById(R.id.equalizerView);
-        view.setModel(model);
+        eqView = (EqualizerView) findViewById(R.id.equalizerView);
+        eqView.setModel(model);
+        eqView.setActivity(this);
     }
 
     /**
@@ -133,6 +132,7 @@ public class AuremActivity extends Activity {
 
     /**
      * Called when the savePreset button is clicked.
+     * @param view View the view being clicked.
      */
     public void savePresetClicked(View view)
     {
@@ -168,7 +168,8 @@ public class AuremActivity extends Activity {
     }
 
     /**
-     * Method for on/off switch.
+     * Called when On/Off Button is clicked.
+     * @param view View the view.
      */
     public void onOffClicked(View view)
     {
@@ -214,9 +215,12 @@ public class AuremActivity extends Activity {
             if(resultingPreset <= 9) {
                 eqService.equalizer().usePreset( (short)
                     result.getIntExtra("index", 0));
-                String state = eqService.equalizer().
-                    getProperties().toString();
-                //debug.setText(state);
+                short[] bandLevels = new short[5];
+                for(short i = 0; i < 5; i ++) {
+                   bandLevels[i] = eqService.equalizer().getBandLevel(i);
+                   model.setBandLevel(i, bandLevels[i]);
+                   seekBars[i].setProgress(bandLevels[i] + 1500);
+                }
             }
             else {
                 Preset preset = model.getPreset((short)(resultingPreset - 10));
@@ -224,9 +228,12 @@ public class AuremActivity extends Activity {
                 for(short i = 0; i < bands.length; i++) {
                     eqService.equalizer().setBandLevel(i, bands[i]);
                 }
-                String state = eqService.equalizer().
-                    getProperties().toString();
-                //debug.setText(state);
+                short[] bandLevels = new short[5];
+                for(short i = 0; i < 5; i ++) {
+                   bandLevels[i] = eqService.equalizer().getBandLevel(i);
+                   model.setBandLevel(i, bandLevels[i]);
+                   seekBars[i].setProgress(bandLevels[i] + 1500);
+                }
             }
         }
     }

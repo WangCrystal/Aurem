@@ -1,5 +1,6 @@
 package cs2114.aurem;
 
+import android.graphics.RectF;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.view.MotionEvent;
@@ -18,13 +19,15 @@ public class EqualizerView extends android.view.View
     private int height;
     private int width;
 
-    private Rect onOffSwitch;
-    private Rect savePreset;
-    private Rect loadPreset;
+    private RectF onOffSwitch;
+    private RectF savePreset;
+    private RectF loadPreset;
 
     private Bitmap onOffImage;
     private Bitmap savePresetImage;
     private Bitmap loadPresetImage;
+
+    AuremActivity activity;
 
 
     /**
@@ -52,39 +55,84 @@ public class EqualizerView extends android.view.View
     @Override
     public void onDraw(Canvas canvas)
     {
-        savePresetImage = BitmapFactory.decodeResource(
-            getResources(), R.drawable.save);
+        width = canvas.getWidth();
+        height = canvas.getHeight();
+
+
         if (model == null)
         {
             return;
         }
-        onOffSwitch = new Rect(canvas.getWidth() / 6 - 50,
-            canvas.getHeight() / 16,
-            canvas.getWidth() / 6 + 50,
-            canvas.getHeight() / 16 + 100);
 
-        savePreset = new Rect(canvas.getWidth() * 3 / 6 - 50,
-            canvas.getHeight() / 16,
-            canvas.getWidth() * 3 / 6 + 50,
-            canvas.getHeight() / 16 + 100);
 
-        loadPreset = new Rect(canvas.getWidth() * 5 / 6 - 50,
-            canvas.getHeight() / 16,
-            canvas.getWidth() * 5 / 6 + 50,
-            canvas.getHeight() / 16 + 100);
+        savePresetImage = BitmapFactory.decodeResource(
+            getResources(), R.drawable.save);
+        savePresetImage = Bitmap.createScaledBitmap(savePresetImage,
+            (int) (savePresetImage.getWidth() * 1.25),
+            (int) (savePresetImage.getHeight() * 1.25), true);
+
+        loadPresetImage = BitmapFactory.decodeResource(getResources(),
+            R.drawable.open);
+        loadPresetImage = Bitmap.createScaledBitmap(loadPresetImage,
+            (int) (loadPresetImage.getWidth() * 1.25),
+            (int) (loadPresetImage.getHeight() * 1.25), true);
 
         Paint paint = new Paint();
+
+
+        float left = (width * 8 / 10) - (savePresetImage.getWidth() / 2) ;
+        float top = height / 10;
+        canvas.drawBitmap(savePresetImage, left , top, null);
+        left = (width * 5 / 10) - (loadPresetImage.getWidth() / 2);
+        canvas.drawBitmap(loadPresetImage, left, top, null);
+
+
+
+        onOffSwitch = new RectF(
+            (width * 2 / 10) - (savePresetImage.getWidth() / 2),
+            height / 10,
+            (width * 2 / 10) + (savePresetImage.getWidth() / 2),
+            (height / 10) + savePresetImage.getHeight());
+
+        savePreset = new RectF(
+            (width * 8 / 10) - (savePresetImage.getWidth() / 2),
+            height / 10,
+            (width * 8 / 10) + (savePresetImage.getWidth() / 2),
+            (height / 10) + savePresetImage.getHeight());
+
+        loadPreset = new RectF(
+            (width * 5 / 10) - (loadPresetImage.getWidth() / 2),
+            height / 10,
+            (width * 5 / 10) + (loadPresetImage.getWidth() / 2),
+            (height / 10) + loadPresetImage.getHeight());
+
         paint.setARGB(255,255,255,255);
         canvas.drawRect(onOffSwitch, paint);
+        paint.setARGB(0,0,0,0);
         canvas.drawRect(loadPreset, paint);
-        canvas.drawBitmap(savePresetImage, savePreset, savePreset, paint);
+        canvas.drawRect(savePreset, paint);
 
+    }
+
+    /**
+     *
+     */
+    public void setActivity(AuremActivity activity)
+    {
+        this.activity = activity;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
-           //.
+        if(e.getAction() == MotionEvent.ACTION_UP) {
+            if (loadPreset.contains(e.getX(), e.getY())) {
+                activity.loadPresetClicked(this);
+            }
+            else if (savePreset.contains(e.getX(), e.getY())) {
+                activity.savePresetClicked(this);
+            }
+        }
         return true;
     }
 
