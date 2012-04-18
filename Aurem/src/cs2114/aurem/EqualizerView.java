@@ -16,6 +16,9 @@ public class EqualizerView extends android.view.View
     private Rect[] tracks;
     private Rect[] sliders;
 
+    private int height;
+    private int width;
+
 
     /**
      * Constructor for the EqualizerView class.
@@ -46,8 +49,8 @@ public class EqualizerView extends android.view.View
         {
             return;
         }
-        int width = canvas.getWidth();
-        int height = canvas.getHeight();
+        width = canvas.getWidth();
+        height = canvas.getHeight();
 
         Paint tempPaint = new Paint();
         tempPaint.setARGB(255, 0, 166, 255);
@@ -81,15 +84,14 @@ public class EqualizerView extends android.view.View
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
+
         if(e.getAction() == MotionEvent.ACTION_DOWN) {
             for(int i = 0; i < 5; i++) {
                 if(e.getX() < tracks[i].centerX() + 10 &&
                     e.getX() > tracks[i].centerX() - 10) {
-                    short bandLevel = (short)((short) (tracks[i].height() / 2
-                        - (sliders[i].centerX() /
-                        (tracks[i].height() / 2))) * 1500);
+                    short bandLevel = (short)((short)((short) ((height / 16 * 5) +
+                        (height / 8) - e.getX()) / height ) * 1500);
                     model.setBandLevel((short) i, bandLevel);
-
                 }
             }
         }

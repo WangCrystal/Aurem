@@ -1,5 +1,8 @@
 package cs2114.aurem;
 
+import android.widget.ImageButton;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.SeekBar;
 import java.io.File;
 import android.content.DialogInterface;
 import android.widget.EditText;
@@ -40,6 +43,12 @@ public class AuremActivity extends Activity {
 
     private EqualizerView view;
 
+    private boolean isServiceOn;
+
+    private SeekBar seekBar;
+
+    private ImageButton savePreset;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,11 +58,12 @@ public class AuremActivity extends Activity {
 
 
 
-        //debug = (TextView) findViewById(R.id.debug);
+        debug = (TextView) findViewById(R.id.debug);
 
         intent = new Intent(this, EqualizerService.class);
         startService(intent);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        isServiceOn = true;
 
         //All this stuff has to do with setting up a persisent
         //notification icon to let the user return to the app.
@@ -83,8 +93,18 @@ public class AuremActivity extends Activity {
         }
         model.readPresetFile();
 
-        view = (EqualizerView) findViewById(R.id.equalizerView1);
-        view.setModel(model);
+        seekBar = (SeekBar) findViewById(R.id.seekBar0);
+        seekBar.setMax(3000);
+        seekBar.setProgress(1500);
+        seekBar.setOnSeekBarChangeListener(
+            new SeekBarListener());
+        debug.setText(seekBar.getProgress() - 1500 + "");
+
+        //view = (EqualizerView) findViewById(R.id.equalizerView1);
+        //view.setModel(model);
+
+        savePreset = (ImageButton) findViewById(R.id.savePreset);
+        savePreset.setImageResource(R.drawable.save);
     }
 
     /**
@@ -133,13 +153,52 @@ public class AuremActivity extends Activity {
           }
         });
 
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int whichButton) {
+        alert.setNegativeButton("Cancel", new
+            DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
             // Canceled.
           }
         });
 
         alert.show();
+
+    }
+
+    /**
+     * Method for on/off switch.
+     */
+    public void onOffClicked(View view)
+    {
+        if (isServiceOn == true) {
+            notificationManager.cancelAll();
+            stopService(intent);
+            isServiceOn = false;
+        }
+        else {
+
+            intent = new Intent(this, EqualizerService.class);
+            startService(intent);
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            isServiceOn = true;
+
+            PendingIntent contentIntent =
+                PendingIntent.getActivity(this, 1, new Intent(this,
+                    AuremActivity.class), 0);
+            notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+            int icon = R.drawable.ic_launcher;
+            Notification notification = new Notification(icon,
+                "Aurem EQ", System.currentTimeMillis());
+            Context context = getApplicationContext();
+            CharSequence contentTitle = "Aurem EQ";
+            CharSequence contentText = "Tap to return to Aurem EQ";
+            notification.setLatestEventInfo(context, contentTitle,
+                contentText, contentIntent);
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+            notificationManager.notify(1, notification);
+
+
+        }
 
     }
 
@@ -154,7 +213,7 @@ public class AuremActivity extends Activity {
                     result.getIntExtra("index", 0));
                 String state = eqService.equalizer().
                     getProperties().toString();
-                debug.setText(state);
+                //debug.setText(state);
             }
             else {
                 Preset preset = model.getPreset((short)(resultingPreset - 10));
@@ -164,7 +223,7 @@ public class AuremActivity extends Activity {
                 }
                 String state = eqService.equalizer().
                     getProperties().toString();
-                debug.setText(state);
+                //debug.setText(state);
             }
         }
     }
@@ -184,6 +243,36 @@ public class AuremActivity extends Activity {
         super.onDestroy();
         unbindService(serviceConnection);
     }
+
+    public class SeekBarListener implements OnSeekBarChangeListener
+    {
+
+        public void onProgressChanged(
+            SeekBar seekBar,
+            int progress,
+            boolean fromUser)
+        {
+            progress = progress - 1500;
+            model.setBandLevel((short) 0, (short) progress);
+            debug.setText(progress + "");
+
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void onStopTrackingTouch(SeekBar seekBar)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
+
+
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className,

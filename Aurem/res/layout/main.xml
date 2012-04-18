@@ -3,10 +3,63 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-    <cs2114.aurem.EqualizerView
-        android:id="@+id/equalizerView1"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/onOff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onOffClicked"
+            android:text="@string/hello" />
+
+        <ImageButton
+            android:id="@+id/savePreset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="savePresetClicked"
+            android:src="@drawable/save" />
+
+        <Button
+            android:id="@+id/loadPreset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testButtonClicked"
+            android:text="@string/loadPreset" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekBar0"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <SeekBar
+        android:id="@+id/seekBar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <SeekBar
+        android:id="@+id/seekBar4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>
