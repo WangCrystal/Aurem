@@ -1,16 +1,11 @@
 package cs2114.aurem;
 
 import java.io.File;
-import android.os.Environment;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import android.app.Activity;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import android.util.Log;
 import java.io.PrintWriter;
 import java.io.IOException;
-import java.io.FileReader;
 import java.util.Scanner;
 import java.util.Observable;
 
@@ -34,6 +29,7 @@ public class EqualizerModel extends Observable
     private short[] bandLevels;
     /**
      * This is the constructor for EqualizerModel objects.
+     * @param parent AuremActivity the activity that creates this.
      */
     public EqualizerModel(AuremActivity parent)
     {

@@ -5,13 +5,22 @@ import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.view.MotionEvent;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Canvas;
 import java.util.Observable;
 import java.util.Observer;
 import android.content.Context;
 import android.util.AttributeSet;
 
+/**
+ * // -------------------------------------------------------------------------
+/**
+ *  This is the Equalizer View
+ *
+ *  @author Joseph O'Connor (jto2e);
+ *  @author Laura Avakian (lavakian);
+ *  @author Barbara Brown (brownba1);
+ *  @version 2012.04.18
+ */
 public class EqualizerView extends android.view.View
 {
     private EqualizerModel model;
@@ -27,7 +36,7 @@ public class EqualizerView extends android.view.View
     private Bitmap savePresetImage;
     private Bitmap loadPresetImage;
 
-    AuremActivity activity;
+    private AuremActivity activity;
 
 
     /**
@@ -42,6 +51,7 @@ public class EqualizerView extends android.view.View
 
     /**
      * Allows the view to get an instance of the model.
+     * @param model AuremModel the Equalizer Model.
      */
     public void setModel(EqualizerModel model)
     {
@@ -51,6 +61,7 @@ public class EqualizerView extends android.view.View
 
     /**
      * This is what draws the view.
+     * @param canvas Canvas the canvas.
      */
     @Override
     public void onDraw(Canvas canvas)
@@ -115,22 +126,30 @@ public class EqualizerView extends android.view.View
     }
 
     /**
-     *
+     * Sets an instance of the activity.
+     * @param activity AuremActivity the activity.
      */
     public void setActivity(AuremActivity activity)
     {
         this.activity = activity;
     }
 
+    /**
+     * Called when a touch event happens.
+     * @param e MotionEvent the motion event.
+     */
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
-        if(e.getAction() == MotionEvent.ACTION_UP) {
+        if (e.getAction() == MotionEvent.ACTION_UP) {
             if (loadPreset.contains(e.getX(), e.getY())) {
                 activity.loadPresetClicked(this);
             }
             else if (savePreset.contains(e.getX(), e.getY())) {
                 activity.savePresetClicked(this);
+            }
+            else if (onOffSwitch.contains(e.getX(), e.getY())) {
+                activity.onOffClicked(this);
             }
         }
         return true;
@@ -144,8 +163,10 @@ public class EqualizerView extends android.view.View
      *  Follow it with additional details about its purpose, what abstraction
      *  it represents, and how to use it.
      *
-     *  @author Joseph O'Connor (jto2e)
-     *  @version 04.17.2012
+     *  @author Joseph O'Connor (jto2e);
+     *  @author Laura Avakian (lavakian);
+     *  @author Barbara Brown (brownba1);
+     *  @version 2012.04.18
      */
     public class EqualizerObserver implements Observer
     {

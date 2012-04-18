@@ -13,8 +13,10 @@ import android.app.ListActivity;
  *  This is the ListView containing all the Equalizer presets
  *  that the user can select to load.
  *
- *  @author Taylor
- *  @version Apr 16, 2012
+ *  @author Joseph O'Connor (jto2e);
+ *  @author Laura Avakian (lavakian);
+ *  @author Barbara Brown (brownba1);
+ *  @version 2012.04.18
  */
 public class PresetListView extends ListActivity
 {

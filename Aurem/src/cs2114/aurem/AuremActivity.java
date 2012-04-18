@@ -23,8 +23,10 @@ import android.os.Bundle;
 /**
  *  This is the Activity for the Aurem Equalizer.
  *
- *  @author Joseph Taylor O'Connor (jto2e)
- *  @version 2012.04.10
+ *  @author Joseph O'Connor (jto2e);
+ *  @author Laura Avakian (lavakian);
+ *  @author Barbara Brown (brownba1);
+ *  @version 2012.04.18
  */
 public class AuremActivity extends Activity {
 
@@ -44,7 +46,10 @@ public class AuremActivity extends Activity {
 
     private SeekBar[] seekBars;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is started.
+     * @param savedInstanceState Bundle the saved state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -206,6 +211,14 @@ public class AuremActivity extends Activity {
 
     }
 
+    /**
+     * This is called after the user selects a preset from the
+     * ListActivity.
+     * @param requestCode int the request code.
+     * @param resultCode int the result code.
+     * @param result Intent the resulting intent.
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode,
         Intent result)
@@ -238,6 +251,10 @@ public class AuremActivity extends Activity {
         }
     }
 
+    /**
+     * Called when a new intent starts the activity.
+     * @param newIntent Intent the new intent.
+     */
     @Override
     public void onNewIntent(Intent newIntent)
     {
@@ -254,9 +271,26 @@ public class AuremActivity extends Activity {
         unbindService(serviceConnection);
     }
 
+    /**
+     * // -------------------------------------------------------------------------
+    /**
+     *  This is a listener that responds to changes in the five
+     *  seek bars of the equalizer.
+     *
+     *  @author Joseph O'Connor (jto2e);
+     *  @author Laura Avakian (lavakian);
+     *  @author Barbara Brown (brownba1);
+     *  @version 2012.04.18
+     */
     public class SeekBarListener implements OnSeekBarChangeListener
     {
 
+        /**
+         * Called when any of the seekBars are changed.
+         * @param seekBar SeekBar the bar.
+         * @param progress int the level of the bar.
+         * @param fromUser boolean true if the change comes from the user.
+         */
         public void onProgressChanged(
             SeekBar seekBar,
             int progress,
@@ -273,15 +307,23 @@ public class AuremActivity extends Activity {
 
         }
 
+        /**
+         * called when touch tracking starts.
+         * @param seekBar the seek bar.
+         */
         public void onStartTrackingTouch(SeekBar seekBar)
         {
-            // TODO Auto-generated method stub
+            // Unneeded inhereted method.
 
         }
 
+        /**
+         * called when touch tracking stops.
+         * @param seekBar the seek bar.
+         */
         public void onStopTrackingTouch(SeekBar seekBar)
         {
-            // TODO Auto-generated method stub
+            // Unneeded inhereted method.
 
         }
 
