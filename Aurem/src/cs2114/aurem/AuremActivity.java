@@ -30,7 +30,6 @@ import android.os.Bundle;
  */
 public class AuremActivity extends Activity {
 
-    private TextView debug;
 
     private Intent intent;
     private EqualizerService eqService;
@@ -45,9 +44,7 @@ public class AuremActivity extends Activity {
 
     private boolean isServiceOn;
 
-    private SeekBar seekBar;
-
-    private ImageButton savePreset;
+    private SeekBar[] seekBars;
 
     /** Called when the activity is first created. */
     @Override
@@ -58,7 +55,6 @@ public class AuremActivity extends Activity {
 
 
 
-        debug = (TextView) findViewById(R.id.debug);
 
         intent = new Intent(this, EqualizerService.class);
         startService(intent);
@@ -93,25 +89,32 @@ public class AuremActivity extends Activity {
         }
         model.readPresetFile();
 
-        seekBar = (SeekBar) findViewById(R.id.seekBar0);
-        seekBar.setMax(3000);
-        seekBar.setProgress(1500);
-        seekBar.setOnSeekBarChangeListener(
+        for(short i = 0; i < 5; i ++) {
+            model.setBandLevel(i, (short) 0);
+        }
+
+        seekBars = new SeekBar[5];
+        seekBars[0] = (SeekBar) findViewById(R.id.seekBar0);
+        seekBars[1] = (SeekBar) findViewById(R.id.seekBar1);
+        seekBars[2] = (SeekBar) findViewById(R.id.seekBar2);
+        seekBars[3] = (SeekBar) findViewById(R.id.seekBar3);
+        seekBars[4] = (SeekBar) findViewById(R.id.seekBar4);
+        for(int i = 0; i < 5; i++) {
+        seekBars[i].setMax(3000);
+        seekBars[i].setProgress(model.getBandLevel((short) i) + 1500);
+        seekBars[i].setOnSeekBarChangeListener(
             new SeekBarListener());
-        debug.setText(seekBar.getProgress() - 1500 + "");
+        }
 
-        //view = (EqualizerView) findViewById(R.id.equalizerView1);
-        //view.setModel(model);
-
-        savePreset = (ImageButton) findViewById(R.id.savePreset);
-        savePreset.setImageResource(R.drawable.save);
+        view = (EqualizerView) findViewById(R.id.equalizerView);
+        view.setModel(model);
     }
 
     /**
      * This is called when the test button is clicked.
      * @param view The view.
      */
-    public void testButtonClicked(View view) {
+    public void loadPresetClicked(View view) {
         String[] names = new String[10 + model.getPresets().size()];
         for(int i = 0; i < 10; i++) {
             names[i] = eqService.equalizer().getPresetName((short) i);
@@ -252,9 +255,14 @@ public class AuremActivity extends Activity {
             int progress,
             boolean fromUser)
         {
-            progress = progress - 1500;
-            model.setBandLevel((short) 0, (short) progress);
-            debug.setText(progress + "");
+            int theProgress = progress - 1500;
+            for(int i = 0; i < 5; i++) {
+                if(seekBar.equals(seekBars[i])) {
+                    model.setBandLevel((short) i, (short) theProgress);
+                    eqService.equalizer().setBandLevel((short) i,
+                        (short) theProgress);
+                }
+            }
 
         }
 
@@ -271,8 +279,6 @@ public class AuremActivity extends Activity {
         }
 
     }
-
-
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className,

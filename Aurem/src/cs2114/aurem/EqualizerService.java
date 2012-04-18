@@ -30,7 +30,9 @@ public class EqualizerService extends Service
         super.onCreate();
 
         eq = new Equalizer(1000000, 0);
-        eq.usePreset((short) 0);
+        for(short i = 0; i < 5; i++) {
+            eq.setBandLevel(i, (short) 0);
+        }
         eq.setEnabled(true);
     }
     /**

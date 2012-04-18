@@ -3,63 +3,71 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
+
+    <cs2114.aurem.EqualizerView
+        android:id="@+id/equalizerView"
+        android:layout_width="wrap_content"
+        android:layout_height="186dp"
+        android:layout_weight="25"
+        android:padding="0dp" />
+
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/onOff"
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="75" >
+
+        <cs2114.aurem.LabelView
+            android:id="@+id/labelView"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:onClick="onOffClicked"
-            android:text="@string/hello" />
+            android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/savePreset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="savePresetClicked"
-            android:src="@drawable/save" />
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="9"
+            android:orientation="vertical" >
+
+            <SeekBar
+                android:id="@+id/seekBar0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="40dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp" />
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="40dp" 
+                android:paddingRight="20dp" />
+
+            <SeekBar
+                android:id="@+id/seekBar2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="40dp" 
+                android:paddingRight="20dp" />
+
+            <SeekBar
+                android:id="@+id/seekBar3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="40dp" 
+                android:paddingRight="20dp" />
+
+            <SeekBar
+                android:id="@+id/seekBar4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="0dp"
+                android:paddingRight="20dp" />
 
-        <Button
-            android:id="@+id/loadPreset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="testButtonClicked"
-            android:text="@string/loadPreset" />
+        </LinearLayout>
 
     </LinearLayout>
-
-    <SeekBar
-        android:id="@+id/seekBar0"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <SeekBar
-        android:id="@+id/seekBar1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <SeekBar
-        android:id="@+id/seekBar2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <SeekBar
-        android:id="@+id/seekBar3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <SeekBar
-        android:id="@+id/seekBar4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

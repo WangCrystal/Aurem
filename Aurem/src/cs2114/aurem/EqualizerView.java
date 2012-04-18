@@ -1,5 +1,7 @@
 package cs2114.aurem;
 
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.view.MotionEvent;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -13,11 +15,16 @@ public class EqualizerView extends android.view.View
 {
     private EqualizerModel model;
 
-    private Rect[] tracks;
-    private Rect[] sliders;
-
     private int height;
     private int width;
+
+    private Rect onOffSwitch;
+    private Rect savePreset;
+    private Rect loadPreset;
+
+    private Bitmap onOffImage;
+    private Bitmap savePresetImage;
+    private Bitmap loadPresetImage;
 
 
     /**
@@ -45,56 +52,39 @@ public class EqualizerView extends android.view.View
     @Override
     public void onDraw(Canvas canvas)
     {
+        savePresetImage = BitmapFactory.decodeResource(
+            getResources(), R.drawable.save);
         if (model == null)
         {
             return;
         }
-        width = canvas.getWidth();
-        height = canvas.getHeight();
+        onOffSwitch = new Rect(canvas.getWidth() / 6 - 50,
+            canvas.getHeight() / 16,
+            canvas.getWidth() / 6 + 50,
+            canvas.getHeight() / 16 + 100);
 
-        Paint tempPaint = new Paint();
-        tempPaint.setARGB(255, 0, 166, 255);
+        savePreset = new Rect(canvas.getWidth() * 3 / 6 - 50,
+            canvas.getHeight() / 16,
+            canvas.getWidth() * 3 / 6 + 50,
+            canvas.getHeight() / 16 + 100);
 
-        tracks = new Rect[5];
-        sliders = new Rect[5];
-        for(int i = 0; i < 5; i ++) {
-            tracks[i] = new Rect(
-                (width * (i + 2) / 7) - 8,
-                height * 1 / 8,
-                (width * (i + 2) / 7) + 8,
-                (height * 6 / 8));
-            canvas.drawRect(tracks[i], tempPaint);
-        }
-        float[] bandLevels = new float[5];
-        Paint sliderPaint = new Paint();
-        sliderPaint.setARGB(255, 255, 255, 255);
-        for(short i = 0; i < 5; i++) {
-            bandLevels[i] = (float) model.getBandLevel(i) / 1500;
-            sliders[i] = new Rect(
-                (width * (i + 2) / 7) - 20,
-                (int) (tracks[i].centerY() - bandLevels[i] *
-                tracks[i].height() - 25),
-                (width * (i + 2) / 7) + 20,
-                (int) (tracks[i].centerY() - bandLevels[i] *
-                tracks[i].height() + 25));
-            canvas.drawRect(sliders[i], sliderPaint);
-        }
+        loadPreset = new Rect(canvas.getWidth() * 5 / 6 - 50,
+            canvas.getHeight() / 16,
+            canvas.getWidth() * 5 / 6 + 50,
+            canvas.getHeight() / 16 + 100);
+
+        Paint paint = new Paint();
+        paint.setARGB(255,255,255,255);
+        canvas.drawRect(onOffSwitch, paint);
+        canvas.drawRect(loadPreset, paint);
+        canvas.drawBitmap(savePresetImage, savePreset, savePreset, paint);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
-
-        if(e.getAction() == MotionEvent.ACTION_DOWN) {
-            for(int i = 0; i < 5; i++) {
-                if(e.getX() < tracks[i].centerX() + 10 &&
-                    e.getX() > tracks[i].centerX() - 10) {
-                    short bandLevel = (short)((short)((short) ((height / 16 * 5) +
-                        (height / 8) - e.getX()) / height ) * 1500);
-                    model.setBandLevel((short) i, bandLevel);
-                }
-            }
-        }
+           //.
         return true;
     }
 
