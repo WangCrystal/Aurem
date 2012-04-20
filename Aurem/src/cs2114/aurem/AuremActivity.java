@@ -229,6 +229,10 @@ public class AuremActivity extends Activity {
             notification.flags |= Notification.FLAG_NO_CLEAR;
             notificationManager.notify(1, notification);
 
+            for(short i = 0; i < 5; i++) {
+                eqService.equalizer().setBandLevel(i, model.getBandLevel(i));
+            }
+
 
         }
 
