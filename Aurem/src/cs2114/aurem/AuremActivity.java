@@ -92,9 +92,17 @@ public class AuremActivity extends Activity {
         }
         model.readPresetFile();
 
-        for(short i = 0; i < 5; i ++) {
-            model.setBandLevel(i, (short) 0);
+        file = new File("/sdcard/Aurem/lastState.txt");
+        if(!file.exists()) {
+            for(short i = 0; i < 5; i ++) {
+                model.setBandLevel(i, (short) 0);
+            }
         }
+        else {
+            model.readLastStateFile();
+        }
+
+
 
         seekBars = new SeekBar[5];
         seekBars[0] = (SeekBar) findViewById(R.id.seekBar0);
@@ -102,16 +110,30 @@ public class AuremActivity extends Activity {
         seekBars[2] = (SeekBar) findViewById(R.id.seekBar2);
         seekBars[3] = (SeekBar) findViewById(R.id.seekBar3);
         seekBars[4] = (SeekBar) findViewById(R.id.seekBar4);
+
+
+
         for(int i = 0; i < 5; i++) {
-        seekBars[i].setMax(3000);
-        seekBars[i].setProgress(model.getBandLevel((short) i) + 1500);
-        seekBars[i].setOnSeekBarChangeListener(
-            new SeekBarListener());
+            seekBars[i].setMax(3000);
+            seekBars[i].setProgress(model.getBandLevel((short) i) + 1500);
+            seekBars[i].setOnSeekBarChangeListener(
+                new SeekBarListener());
         }
 
         eqView = (EqualizerView) findViewById(R.id.equalizerView);
         eqView.setModel(model);
         eqView.setActivity(this);
+    }
+
+    /**
+     * Called when the application is resmued.
+     */
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        isServiceOn = true;
     }
 
     /**
@@ -180,6 +202,7 @@ public class AuremActivity extends Activity {
     {
         if (isServiceOn == true) {
             notificationManager.cancelAll();
+            eqService.equalizer().usePreset((short) 0);
             stopService(intent);
             isServiceOn = false;
         }
@@ -268,7 +291,27 @@ public class AuremActivity extends Activity {
     public void onDestroy()
     {
         super.onDestroy();
+        model.writeLastStateFile();
         unbindService(serviceConnection);
+    }
+
+    /**
+     * This is called by the framework to save the state of
+     * the activity. Which in our case is the band levels present
+     * in the equalizer.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle bundle)
+    {
+        super.onSaveInstanceState(bundle);
+        short[] bands = new short[5];
+        for(short i = 0; i < 5; i++) {
+            bands[i] = eqService.equalizer().getBandLevel(i);
+        }
+
+        bundle.putShortArray("bandLevels", bands);
+
+
     }
 
     /**
@@ -304,7 +347,6 @@ public class AuremActivity extends Activity {
                         (short) theProgress);
                 }
             }
-
         }
 
         /**
@@ -335,7 +377,7 @@ public class AuremActivity extends Activity {
             eqService =
                 ((EqualizerService.ServiceBinder) service).getService();
             for(short i = 0; i < 5; i ++) {
-                model.setBandLevel(i, eqService.equalizer().getBandLevel(i));
+                eqService.equalizer().setBandLevel(i, model.getBandLevel(i));
             }
         }
 

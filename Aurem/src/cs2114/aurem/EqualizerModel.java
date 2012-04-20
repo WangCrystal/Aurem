@@ -71,6 +71,51 @@ public class EqualizerModel extends Observable
     }
 
     /**
+     * This is used to save the last state of the faders in
+     * case the user presses the back button which exists the activity.
+     */
+    public void writeLastStateFile()
+    {
+        File directory = new File("/sdcard/Aurem/");
+        directory.mkdirs();
+        File outputFile = new File(directory, "lastState.txt");
+        FileOutputStream outputStream;
+        String output = "";
+        try {
+            outputStream = new FileOutputStream(outputFile);
+            outStream = new PrintWriter(outputStream);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        for (short i = 0; i < bandLevels.length; i++) {
+            output += bandLevels[i] + "\n";
+        }
+        outStream.print(output);
+        outStream.close();
+    }
+
+    /**
+     * This reads back the saved band levels when the app is reopened.
+     */
+    public void readLastStateFile()
+    {
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream("/sdcard/Aurem/lastState.txt");
+            inStream = new Scanner(inputStream);
+        }
+        catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
+        inStream.useDelimiter("\n");
+        for(short i = 0; i < 5; i++) {
+            bandLevels[i] = Short.parseShort(inStream.nextLine());
+        }
+        inStream.close();
+    }
+
+    /**
      * This reads the preset text file and loads all
      * user presets into the HashMap.
      */

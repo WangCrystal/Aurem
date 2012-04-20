@@ -21,6 +21,7 @@ public class EqualizerService extends Service
 
     private Equalizer eq;
 
+
     /**
      * This gets called first when the service is created.
      */
